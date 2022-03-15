@@ -3,8 +3,10 @@
  * Module dependencies.
  */
 
+// @ts-expect-error ts-migrate(7016) FIXME: Could not find a declaration file for module 'json... Remove this comment to see the full error message
 import JSONBigInt from 'json-bigint';
 import RpcError from './errors/rpc-error';
+// @ts-expect-error ts-migrate(7016) FIXME: Could not find a declaration file for module 'loda... Remove this comment to see the full error message
 import _ from 'lodash';
 
 /**
@@ -17,7 +19,10 @@ const { parse } = JSONBigInt({ storeAsString: true, strict: true }); // eslint-d
  * Get RPC response body result.
  */
 
-function getRpcResult(body, { headers = false, response } = {}) {
+function getRpcResult(body: any, {
+  headers = false,
+  response
+}: any = {}) {
   if (body.error !== null) {
     throw new RpcError(
       _.get(body, 'error.code', -32603),
@@ -42,7 +47,10 @@ function getRpcResult(body, { headers = false, response } = {}) {
  */
 
 export default class Parser {
-  constructor({ headers } = {}) {
+  headers: any;
+  constructor({
+    headers
+  }: any = {}) {
     this.headers = headers;
   }
 
@@ -50,7 +58,7 @@ export default class Parser {
    * Parse rpc response.
    */
 
-  rpc(response) {
+  rpc(response: any) {
     // The RPC api returns a `text/html; charset=ISO-8859-1` encoded response with an empty string as the body
     // when an error occurs.
     if (typeof response.body === 'string' && response.headers['content-type'] !== 'application/json' && response.statusCode !== 200) {
@@ -80,12 +88,13 @@ export default class Parser {
     return batch;
   }
 
-  rest(extension, response) {
+  rest(extension: any, response: any) {
     // The REST api returns a `text/plain` encoded response with the error line and the control
     // characters \r\n. For readability and debuggability, the error message is set to this content.
     // When requesting a binary response, the body will be returned as a Buffer representation of
     // this error string.
     if (response.headers['content-type'] !== 'application/json' && response.statusCode !== 200) {
+      // @ts-expect-error ts-migrate(2580) FIXME: Cannot find name 'Buffer'. Do you need to install ... Remove this comment to see the full error message
       if (response.body instanceof Buffer) {
         response.body = response.body.toString('utf-8');
       }

@@ -4,14 +4,16 @@
  */
 
 import { obfuscate } from './request-obfuscator';
+// @ts-expect-error ts-migrate(7016) FIXME: Could not find a declaration file for module 'requ... Remove this comment to see the full error message
 import request from 'request';
+// @ts-expect-error ts-migrate(7016) FIXME: Could not find a declaration file for module '@uph... Remove this comment to see the full error message
 import requestLogger from '@uphold/request-logger';
 
 /**
  * Exports.
  */
 
-export default logger => requestLogger(request, (request, instance) => {
+export default (logger: any) => requestLogger(request, (request: any, instance: any) => {
   obfuscate(request, instance);
 
   if (request.type === 'response') {
