@@ -18,6 +18,7 @@ import semver from 'semver';
 const networks = {
   mainnet: 8332,
   regtest: 18332,
+  signet: 38332,
   testnet: 18332
 };
 
