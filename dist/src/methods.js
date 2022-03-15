@@ -1,16 +1,21 @@
+"use strict";
 /* eslint-disable no-inline-comments */
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 /**
  * Module dependencies.
  */
+// @ts-expect-error ts-migrate(7016) FIXME: Could not find a declaration file for module 'loda... Remove this comment to see the full error message
 
-import { map, set } from 'lodash';
-
+const lodash_1 = require("lodash");
 /**
  * Export available rpc methods.
  */
 
-export default {
+
+exports.default = {
   abandonTransaction: {
     category: 'wallet',
     features: {
@@ -141,8 +146,8 @@ export default {
     },
     obfuscate: {
       request: {
-        default: (params: any) => set([...params], '[0]', '******'),
-        named: (params: any) => set(params, 'passphrase', '******')
+        default: params => (0, lodash_1.set)([...params], '[0]', '******'),
+        named: params => (0, lodash_1.set)(params, 'passphrase', '******')
       }
     },
     version: '>=0.1.0'
@@ -445,8 +450,8 @@ export default {
     },
     obfuscate: {
       request: {
-        default: (params: any) => set(params, '[0]', map(params[0], (request: any) => set(request, 'keys', map(request.keys, () => '******')))),
-        named: (params: any) => set(params, 'requests', map(params.requests, (request: any) => set(request, 'keys', map(request.keys, () => '******'))))
+        default: params => (0, lodash_1.set)(params, '[0]', (0, lodash_1.map)(params[0], request => (0, lodash_1.set)(request, 'keys', (0, lodash_1.map)(request.keys, () => '******')))),
+        named: params => (0, lodash_1.set)(params, 'requests', (0, lodash_1.map)(params.requests, request => (0, lodash_1.set)(request, 'keys', (0, lodash_1.map)(request.keys, () => '******'))))
       }
     },
     version: '>=0.14.0'
@@ -459,7 +464,7 @@ export default {
     obfuscate: {
       request: {
         default: () => ['******'],
-        named: (params: any) => set(params, 'privkey', '******')
+        named: params => (0, lodash_1.set)(params, 'privkey', '******')
       }
     },
     version: '>=0.6.0'
@@ -684,8 +689,8 @@ export default {
     },
     obfuscate: {
       request: {
-        default: (params: any) => set([...params], '[1]', '******'),
-        named: (params: any) => set(params, 'seed', '******')
+        default: params => (0, lodash_1.set)([...params], '[1]', '******'),
+        named: params => (0, lodash_1.set)(params, 'seed', '******')
       }
     },
     version: '>=0.17.0'
@@ -719,8 +724,8 @@ export default {
     category: 'util',
     obfuscate: {
       request: {
-        default: (params: any) => set([...params], '[0]', '******'),
-        named: (params: any) => set(params, 'privkey', '******')
+        default: params => (0, lodash_1.set)([...params], '[0]', '******'),
+        named: params => (0, lodash_1.set)(params, 'privkey', '******')
       }
     },
     version: '>=0.13.0'
@@ -729,8 +734,8 @@ export default {
     category: 'rawtransactions',
     obfuscate: {
       request: {
-        default: (params: any) => set([...params], '[2]', map(params[2], () => '******')),
-        named: (params: any) => set(params, 'privkeys', map(params.privkeys || [], () => '******'))
+        default: params => (0, lodash_1.set)([...params], '[2]', (0, lodash_1.map)(params[2], () => '******')),
+        named: params => (0, lodash_1.set)(params, 'privkeys', (0, lodash_1.map)(params.privkeys || [], () => '******'))
       }
     },
     version: '>=0.7.0 <0.18.0'
@@ -739,8 +744,8 @@ export default {
     category: 'rawtransactions',
     obfuscate: {
       request: {
-        default: (params: any) => set([...params], '[1]', map(params[1], () => '******')),
-        named: (params: any) => set(params, 'privkeys', map(params.privkeys || [], () => '******'))
+        default: params => (0, lodash_1.set)([...params], '[1]', (0, lodash_1.map)(params[1], () => '******')),
+        named: params => (0, lodash_1.set)(params, 'privkeys', (0, lodash_1.map)(params.privkeys || [], () => '******'))
       }
     },
     version: '>=0.17.0'
@@ -813,8 +818,8 @@ export default {
     },
     obfuscate: {
       request: {
-        default: (params: any) => set([...params], '[0]', '******'),
-        named: (params: any) => set(params, 'passphrase', '******')
+        default: params => (0, lodash_1.set)([...params], '[0]', '******'),
+        named: params => (0, lodash_1.set)(params, 'passphrase', '******')
       }
     },
     version: '>=0.1.0'
@@ -826,8 +831,8 @@ export default {
     },
     obfuscate: {
       request: {
-        default: (params: any) => set(set([...params], '[0]', '******'), '[1]', '******'),
-        named: (params: any) => set(set(params, 'oldpassphrase', '******'), 'newpassphrase', '******')
+        default: params => (0, lodash_1.set)((0, lodash_1.set)([...params], '[0]', '******'), '[1]', '******'),
+        named: params => (0, lodash_1.set)((0, lodash_1.set)(params, 'oldpassphrase', '******'), 'newpassphrase', '******')
       }
     },
     version: '>=0.1.0'

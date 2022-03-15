@@ -5,7 +5,6 @@
 
 import Parser from './parser';
 import Requester from './requester';
-// @ts-expect-error ts-migrate(7016) FIXME: Could not find a declaration file for module 'loda... Remove this comment to see the full error message
 import _ from 'lodash';
 // @ts-expect-error ts-migrate(7016) FIXME: Could not find a declaration file for module 'debu... Remove this comment to see the full error message
 import debugnyan from 'debugnyan';
