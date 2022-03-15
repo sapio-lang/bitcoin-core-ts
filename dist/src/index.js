@@ -31,7 +31,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 const networks = {
   mainnet: 8332,
   regtest: 18332,
-  testnet: 18332
+  testnet: 18332,
+  signet: 38332
 };
 /**
  * Promisify helper.
