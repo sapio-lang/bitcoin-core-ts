@@ -10,13 +10,13 @@ import methods from '../methods';
  * Map all methods to lowercase.
  */
 
-const lowercaseMethods = mapKeys(methods, (value, key) => key.toLowerCase());
+const lowercaseMethods = mapKeys(methods, (value: any, key: any) => key.toLowerCase());
 
 /**
  * Obfuscate the response body.
  */
 
-function obfuscateResponseBody(body, method) {
+function obfuscateResponseBody(body: any, method: any) {
   const fn = get(lowercaseMethods[method], 'obfuscate.response');
 
   if (!fn || isEmpty(body.result)) {
@@ -30,7 +30,7 @@ function obfuscateResponseBody(body, method) {
  * Obfuscate the response.
  */
 
-function obfuscateResponse(request, instance) {
+function obfuscateResponse(request: any, instance: any) {
   if (request.type !== 'response') {
     return;
   }
@@ -54,9 +54,9 @@ function obfuscateResponse(request, instance) {
   const requestBody = JSON.parse(instance.body);
 
   if (isArray(request.body)) {
-    const methodsById = mapKeys(requestBody, method => method.id);
+    const methodsById = mapKeys(requestBody, (method: any) => method.id);
 
-    request.body = map(request.body, request => obfuscateResponseBody(request, methodsById[request.id].method));
+    request.body = map(request.body, (request: any) => obfuscateResponseBody(request, methodsById[request.id].method));
   } else {
     request.body = obfuscateResponseBody(request.body, requestBody.method);
   }
@@ -68,7 +68,7 @@ function obfuscateResponse(request, instance) {
  * Obfuscate the request body.
  */
 
-function obfuscateRequestBody(body) {
+function obfuscateRequestBody(body: any) {
   const method = get(lowercaseMethods[body.method], 'obfuscate.request');
 
   if (!method) {
@@ -86,7 +86,7 @@ function obfuscateRequestBody(body) {
  * Obfuscate the request.
  */
 
-function obfuscateRequest(request) {
+function obfuscateRequest(request: any) {
   if (request.type !== 'request') {
     return;
   }
@@ -110,7 +110,7 @@ function obfuscateRequest(request) {
  * Obfuscate headers.
  */
 
-function obfuscateHeaders(request) {
+function obfuscateHeaders(request: any) {
   if (request.type !== 'request') {
     return;
   }
@@ -126,7 +126,7 @@ function obfuscateHeaders(request) {
  * Export `RequestObfuscator`.
  */
 
-export function obfuscate(request, instance) {
+export function obfuscate(request: any, instance: any) {
   obfuscateHeaders(request);
   obfuscateRequest(request);
   obfuscateResponse(request, instance);

@@ -10,7 +10,12 @@ import { get } from 'lodash';
  */
 
 export default class Requester {
-  constructor({ methods = {}, version } = {}) {
+  methods: any;
+  version: any;
+  constructor({
+    methods = {},
+    version
+  }: any = {}) {
     this.methods = methods;
     this.version = version;
   }
@@ -19,7 +24,11 @@ export default class Requester {
   * Prepare rpc request.
   */
 
-  prepare({ method, parameters = [], suffix }) {
+  prepare({
+    method,
+    parameters = [],
+    suffix
+  }: any) {
     method = method.toLowerCase();
 
     if (this.version && !get(this.methods[method], 'supported', false)) {

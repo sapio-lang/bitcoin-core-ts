@@ -1,0 +1,1 @@
+{"version":3,"file":"requester.d.ts","sourceRoot":"","sources":["../src/requester.ts"],"names":[],"mappings":"AACA;;GAEG;AAKH;;GAEG;AAEH,MAAM,CAAC,OAAO,OAAO,SAAS;IAC5B,OAAO,EAAE,GAAG,CAAC;IACb,OAAO,EAAE,GAAG,CAAC;gBACD,EACV,OAAY,EACZ,OAAO,EACR,GAAE,GAAQ;IAKX;;MAEE;IAEF,OAAO,CAAC,EACN,MAAM,EACN,UAAe,EACf,MAAM,EACP,EAAE,GAAG;;;;;CAaP"}

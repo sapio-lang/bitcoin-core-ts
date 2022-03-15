@@ -6,9 +6,11 @@
 import Parser from './parser';
 import Requester from './requester';
 import _ from 'lodash';
+// @ts-expect-error ts-migrate(7016) FIXME: Could not find a declaration file for module 'debu... Remove this comment to see the full error message
 import debugnyan from 'debugnyan';
 import methods from './methods';
 import requestLogger from './logging/request-logger';
+// @ts-expect-error ts-migrate(7016) FIXME: Could not find a declaration file for module 'semv... Remove this comment to see the full error message
 import semver from 'semver';
 
 /**
@@ -26,8 +28,8 @@ const networks = {
  * Promisify helper.
  */
 
-const promisify = fn => (...args) => new Promise((resolve, reject) => {
-  fn(...args, (error, value) => {
+const promisify = (fn: any) => (...args: any[]) => new Promise((resolve, reject) => {
+  fn(...args, (error: any, value: any) => {
     if (error) {
       reject(error);
 
@@ -43,6 +45,21 @@ const promisify = fn => (...args) => new Promise((resolve, reject) => {
  */
 
 class Client {
+  agentOptions: any;
+  auth: any;
+  hasNamedParametersSupport: any;
+  headers: any;
+  host: any;
+  methods: any;
+  parser: any;
+  password: any;
+  port: any;
+  request: any;
+  requester: any;
+  ssl: any;
+  timeout: any;
+  version: any;
+  wallet: any;
   constructor({
     agentOptions,
     headers = false,
@@ -56,8 +73,9 @@ class Client {
     username,
     version,
     wallet
-  } = {}) {
+  }: any = {}) {
     if (!_.has(networks, network)) {
+      // @ts-expect-error ts-migrate(2554) FIXME: Expected 0-1 arguments, but got 2.
       throw new Error(`Invalid network name "${network}"`, { network });
     }
 
@@ -67,6 +85,7 @@ class Client {
     this.headers = headers;
     this.host = host;
     this.password = password;
+    // @ts-expect-error ts-migrate(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
     this.port = port || networks[network];
     this.ssl = {
       enabled: _.get(ssl, 'enabled', ssl),
@@ -82,6 +101,7 @@ class Client {
       const result = /[0-9]+\.[0-9]+\.[0-9]+/.exec(version);
 
       if (!result) {
+        // @ts-expect-error ts-migrate(2554) FIXME: Expected 0-1 arguments, but got 2.
         throw new Error(`Invalid Version "${version}"`, { version });
       }
 
@@ -91,9 +111,9 @@ class Client {
     }
 
     this.version = version;
-    this.methods = _.transform(methods, (result, method, name) => {
+    this.methods = _.transform(methods, (result: any, method: any, name: any) => {
       result[_.toLower(name)] = {
-        features: _.transform(method.features, (result, constraint, name) => {
+        features: _.transform(method.features, (result: any, constraint: any, name: any) => {
           result[name] = {
             supported: version ? semver.satisfies(version, constraint) : true
           };
@@ -120,18 +140,18 @@ class Client {
    * Execute `rpc` command.
    */
 
-  async command(...args) {
+  async command(...args: any[]) {
     let body;
     let multiwallet;
     let [input, ...parameters] = args; // eslint-disable-line prefer-const
     const isBatch = Array.isArray(input);
 
     if (isBatch) {
-      multiwallet = _.some(input, command => {
+      multiwallet = _.some(input, (command: any) => {
         return _.get(this.methods[command.method], 'features.multiwallet.supported', false) === true;
       });
 
-      body = input.map((method, index) => this.requester.prepare({
+      body = input.map((method: any, index: any) => this.requester.prepare({
         method: method.method,
         parameters: method.parameters,
         suffix: index
@@ -156,7 +176,7 @@ class Client {
    * Given a transaction hash, returns a transaction in binary, hex-encoded binary, or JSON formats.
    */
 
-  async getTransactionByHash(hash, { extension = 'json' } = {}) {
+  async getTransactionByHash(hash: any, { extension = 'json' } = {}) {
     return this.parser.rest(extension, await this.request.getAsync({
       encoding: extension === 'bin' ? null : undefined,
       url: `/rest/tx/${hash}.${extension}`
@@ -169,7 +189,7 @@ class Client {
    * hash instead of the complete transaction details. The option only affects the JSON response.
    */
 
-  async getBlockByHash(hash, { summary = false, extension = 'json' } = {}) {
+  async getBlockByHash(hash: any, { summary = false, extension = 'json' } = {}) {
     const encoding = extension === 'bin' ? null : undefined;
     const url = `/rest/block${summary ? '/notxdetails/' : '/'}${hash}.${extension}`;
 
@@ -180,7 +200,7 @@ class Client {
    * Given a block hash, returns amount of blockheaders in upward direction.
    */
 
-  async getBlockHeadersByHash(hash, count, { extension = 'json' } = {}) {
+  async getBlockHeadersByHash(hash: any, count: any, { extension = 'json' } = {}) {
     const encoding = extension === 'bin' ? null : undefined;
     const url = `/rest/headers/${count}/${hash}.${extension}`;
 
@@ -202,9 +222,9 @@ class Client {
    * 	 - https://github.com/bitcoin/bips/blob/master/bip-0064.mediawiki
    */
 
-  async getUnspentTransactionOutputs(outpoints, { extension = 'json' } = {}) {
+  async getUnspentTransactionOutputs(outpoints: any, { extension = 'json' } = {}) {
     const encoding = extension === 'bin' ? null : undefined;
-    const sets = _.flatten([outpoints]).map(outpoint => {
+    const sets = _.flatten([outpoints]).map((outpoint: any) => {
       return `${outpoint.id}-${outpoint.index}`;
     }).join('/');
     const url = `/rest/getutxos/checkmempool/${sets}.${extension}`;
@@ -239,7 +259,8 @@ class Client {
  * Add all known RPC methods.
  */
 
-_.forOwn(methods, (options, method) => {
+_.forOwn(methods, (options: any, method: any) => {
+  // @ts-expect-error ts-migrate(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
   Client.prototype[method] = _.partial(Client.prototype.command, method.toLowerCase());
 });
 
@@ -253,4 +274,5 @@ export default Client;
  * Export Client class (CJS) for compatibility with require('bitcoin-core').
  */
 
+// @ts-expect-error ts-migrate(2580) FIXME: Cannot find name 'module'. Do you need to install ... Remove this comment to see the full error message
 module.exports = Client;
