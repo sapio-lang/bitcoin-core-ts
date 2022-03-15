@@ -1,5 +1,5 @@
 {
-  "name": "bitcoin-core",
+  "name": "bitcoin-core-ts",
   "version": "3.0.0",
   "description": "A modern Bitcoin Core REST and RPC client.",
   "keywords": [
@@ -10,20 +10,20 @@
     "rest",
     "rpc"
   ],
-  "homepage": "https://github.com/ruimarinho/bitcoin-core",
-  "bugs": "https://github.com/ruimarinho/bitcoin-core/issues",
+  "homepage": "https://github.com/sapio-lang/bitcoin-core-ts",
+  "bugs": "https://github.com/sapio-lang/bitcoin-core-ts/issues",
   "license": "MIT",
   "author": {
-    "name": "Rui Marinho",
-    "email": "ruipmarinho@gmail.com"
+    "name": "Jeremy Rubin",
+    "email": "j@rubin.io"
   },
   "main": "dist/src/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ruimarinho/bitcoin-core.git"
+    "url": "https://github.com/sapio-lang/bitcoin-core-ts.git"
   },
   "scripts": {
-    "changelog": "github_changelog_generator --project bitcoin-core --user ruimarinho --no-issues --header-label='# Changelog' --future-release=$npm_config_future_release && sed -i '' -e :a -e '$d;N;2,4ba' -e 'P;D' CHANGELOG.md",
+    "changelog": "github_changelog_generator --project bitcoin-core-ts --user jeremyrubin --no-issues --header-label='# Changelog' --future-release=$npm_config_future_release && sed -i '' -e :a -e '$d;N;2,4ba' -e 'P;D' CHANGELOG.md",
     "cover": "nyc --reporter=html --reporter=text npm test",
     "dependencies": "docker-compose up -d bitcoind bitcoind-ssl bitcoind-username-only",
     "lint": "eslint src test",
