@@ -14,8 +14,7 @@ sut:
 
 bitcoin-core:
   image: ruimarinho/bitcoin-core:0.17-alpine
-  command:
-    -printtoconsole
+  command: -printtoconsole
     -regtest=1
     -rest
     -rpcallowip=10.211.0.0/16
@@ -30,8 +29,7 @@ bitcoin-core:
 
 bitcoin-core-multi-wallet:
   image: ruimarinho/bitcoin-core:0.17-alpine
-  command:
-    -printtoconsole
+  command: -printtoconsole
     -regtest=1
     -rest
     -rpcallowip=10.211.0.0/16
@@ -48,8 +46,7 @@ bitcoin-core-multi-wallet:
 
 bitcoin-core-ssl:
   image: ruimarinho/bitcoin-core:0.11-alpine
-  command:
-    -printtoconsole
+  command: -printtoconsole
     -regtest=1
     -rest
     -rpcallowip=10.211.0.0/16
@@ -69,8 +66,7 @@ bitcoin-core-ssl:
 
 bitcoin-core-username-only:
   image: ruimarinho/bitcoin-core:0.11-alpine
-  command:
-    -printtoconsole
+  command: -printtoconsole
     -regtest=1
     -rest
     -rpcallowip=10.211.0.0/16

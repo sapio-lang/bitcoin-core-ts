@@ -1,9 +1,8 @@
-
 /**
  * Module dependencies.
  */
 
-import BaseError from 'standard-error';
+import BaseError from "standard-error";
 
 /**
  * Export `StandardError` class.

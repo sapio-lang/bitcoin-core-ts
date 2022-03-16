@@ -1,4 +1,3 @@
-
 /**
  * Default config for Docker-based test suite.
  */
@@ -8,7 +7,7 @@
  */
 
 function getHost(name) {
-  return process.env.CI === 'true' ? name : '127.0.0.1'; // eslint-disable-line no-process-env
+  return process.env.CI === "true" ? name : "127.0.0.1"; // eslint-disable-line no-process-env
 }
 
 /**
@@ -17,28 +16,28 @@ function getHost(name) {
 
 const config = {
   bitcoin: {
-    host: getHost('bitcoin-core'),
-    password: 'bar',
+    host: getHost("bitcoin-core"),
+    password: "bar",
     port: 18443,
-    username: 'foo'
+    username: "foo",
   },
   bitcoinMultiWallet: {
-    host: getHost('bitcoin-core-multi-wallet'),
-    password: 'bar',
+    host: getHost("bitcoin-core-multi-wallet"),
+    password: "bar",
     port: 18453,
-    username: 'foo'
+    username: "foo",
   },
   bitcoinSsl: {
-    host: getHost('bitcoin-core-ssl'),
-    password: 'bar',
+    host: getHost("bitcoin-core-ssl"),
+    password: "bar",
     port: 18463,
-    username: 'foo'
+    username: "foo",
   },
   bitcoinUsernameOnly: {
-    host: getHost('bitcoin-core-username-only'),
+    host: getHost("bitcoin-core-username-only"),
     port: 18473,
-    username: 'foo'
-  }
+    username: "foo",
+  },
 };
 
 /**

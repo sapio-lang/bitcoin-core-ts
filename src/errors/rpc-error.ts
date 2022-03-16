@@ -1,10 +1,9 @@
-
 /**
  * Module dependencies.
  */
 
-import { STATUS_CODES } from 'http';
-import StandardError from './standard-error';
+import { STATUS_CODES } from "http";
+import StandardError from "./standard-error";
 
 /**
  * Export `RpcError` class.
@@ -15,11 +14,11 @@ export default class RpcError extends StandardError {
   message: any;
   name: any;
   constructor(code: any, msg: any, props = {}) {
-    if (typeof code != 'number') {
+    if (typeof code != "number") {
       throw new TypeError(`Non-numeric HTTP code`);
     }
 
-    if (typeof msg == 'object' && msg !== null) {
+    if (typeof msg == "object" && msg !== null) {
       props = msg;
       msg = null;
     }
@@ -35,11 +34,11 @@ export default class RpcError extends StandardError {
   }
 
   set status(value) {
-    Object.defineProperty(this, 'status', {
+    Object.defineProperty(this, "status", {
       configurable: true,
       enumerable: true,
       value,
-      writable: true
+      writable: true,
     });
   }
 
