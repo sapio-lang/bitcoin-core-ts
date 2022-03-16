@@ -3,6 +3,8 @@
  * Module dependencies.
  */
 
+import { MethodName, Methods } from './methods';
+import { SemVer } from 'semver';
 import { get } from 'lodash';
 
 /**
@@ -10,12 +12,12 @@ import { get } from 'lodash';
  */
 
 export default class Requester {
-  methods: any;
-  version: any;
+  methods: Methods;
+  version: SemVer | undefined;
   constructor({
     methods = {},
     version
-  }: any = {}) {
+  }: { methods?: Methods, version?: SemVer } = {}) {
     this.methods = methods;
     this.version = version;
   }
@@ -28,7 +30,7 @@ export default class Requester {
     method,
     parameters = [],
     suffix
-  }: any) {
+  }: { method: MethodName, parameters: any[], suffix: string }) {
     method = method.toLowerCase();
 
     if (this.version && !get(this.methods[method], 'supported', false)) {

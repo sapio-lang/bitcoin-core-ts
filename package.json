@@ -34,9 +34,13 @@
     "version": "npm run changelog --future-release=$npm_package_version && npm run transpile && git add -A CHANGELOG.md dist"
   },
   "dependencies": {
+    "@types/json-bigint": "^1.0.1",
     "@types/lodash": "^4.14.180",
+    "@types/request": "^2.48.8",
+    "@types/semver": "^7.3.9",
+    "@types/standard-error": "^1.1.0",
     "@uphold/request-logger": "^2.0.0",
-    "debugnyan": "^1.0.0",
+    "debugnyan": "^3.0.0",
     "json-bigint": "^0.2.0",
     "lodash": "^4.0.0",
     "request": "^2.53.0",

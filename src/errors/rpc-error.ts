@@ -3,7 +3,6 @@
  * Module dependencies.
  */
 
-// @ts-expect-error ts-migrate(2307) FIXME: Cannot find module 'http' or its corresponding typ... Remove this comment to see the full error message
 import { STATUS_CODES } from 'http';
 import StandardError from './standard-error';
 
@@ -28,7 +27,6 @@ export default class RpcError extends StandardError {
     // @ts-expect-error ts-migrate(2339) FIXME: Property 'code' does not exist on type '{}'.
     props.code = code;
 
-    // @ts-expect-error ts-migrate(2554) FIXME: Expected 0 arguments, but got 2.
     super(msg || STATUS_CODES[code], props);
   }
 

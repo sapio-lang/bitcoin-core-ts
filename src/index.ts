@@ -6,12 +6,11 @@
 import Parser from './parser';
 import Requester from './requester';
 import _ from 'lodash';
-// @ts-expect-error ts-migrate(7016) FIXME: Could not find a declaration file for module 'debu... Remove this comment to see the full error message
 import debugnyan from 'debugnyan';
-import methods from './methods';
+import methods, { Feature, Method, Methods } from './methods';
 import requestLogger from './logging/request-logger';
-// @ts-expect-error ts-migrate(7016) FIXME: Could not find a declaration file for module 'semv... Remove this comment to see the full error message
-import semver from 'semver';
+import semver, { SemVer } from 'semver';
+import Logger from 'debugnyan';
 
 /**
  * List of networks and their default port mapping.
@@ -45,26 +44,26 @@ const promisify = (fn: any) => (...args: any[]) => new Promise((resolve, reject)
  */
 
 class Client {
-  agentOptions: any;
-  auth: any;
-  hasNamedParametersSupport: any;
-  headers: any;
-  host: any;
-  methods: any;
+  agentOptions?: string;
+  auth?: { pass?: string, user?: string };
+  hasNamedParametersSupport: boolean;
+  headers: string | boolean;
+  host: string;
+  methods: Methods;
   parser: any;
-  password: any;
-  port: any;
+  password?: string;
+  port: number;
   request: any;
   requester: any;
-  ssl: any;
-  timeout: any;
-  version: any;
-  wallet: any;
+  ssl: { enabled: boolean, strict: boolean };
+  timeout: number;
+  version?: SemVer;
+  wallet?: string;
   constructor({
     agentOptions,
     headers = false,
     host = 'localhost',
-    logger = debugnyan('bitcoin-core'),
+    logger = debugnyan('bitcoin-core', {}),
     network = 'mainnet',
     password,
     port,
@@ -73,19 +72,32 @@ class Client {
     username,
     version,
     wallet
-  }: any = {}) {
+  }: {
+    network?: keyof typeof networks,
+    agentOptions?: string,
+    headers?: boolean | string,
+    host?: string,
+    logger?: typeof Logger,
+    password?: string,
+    port?: number,
+    ssl?: boolean,
+    timeout?: number,
+    username?: string,
+    version?: string,
+    wallet?: string
+
+  } = {}) {
     if (!_.has(networks, network)) {
       // @ts-expect-error ts-migrate(2554) FIXME: Expected 0-1 arguments, but got 2.
       throw new Error(`Invalid network name "${network}"`, { network });
     }
 
     this.agentOptions = agentOptions;
-    this.auth = (password || username) && { pass: password, user: username };
+    this.auth = Boolean(password || username) ? { pass: password, user: username } : undefined;
     this.hasNamedParametersSupport = false;
     this.headers = headers;
     this.host = host;
     this.password = password;
-    // @ts-expect-error ts-migrate(7053) FIXME: Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
     this.port = port || networks[network];
     this.ssl = {
       enabled: _.get(ssl, 'enabled', ssl),
@@ -110,15 +122,22 @@ class Client {
       this.hasNamedParametersSupport = semver.satisfies(version, '>=0.14.0');
     }
 
-    this.version = version;
-    this.methods = _.transform(methods, (result: any, method: any, name: any) => {
+    this.version = version ? new SemVer(version) : undefined;
+    this.methods = _.transform(methods, (result: Methods, method: Method, name: string) => {
       result[_.toLower(name)] = {
-        features: _.transform(method.features, (result: any, constraint: any, name: any) => {
-          result[name] = {
-            supported: version ? semver.satisfies(version, constraint) : true
-          };
+        features: _.transform(method.features ?? {}, (result: {} | Record<Feature, Range | { supported: boolean }>, constraint: semver.Range | { supported: boolean }, name: Feature) => {
+          if ("supported" in constraint) { }
+          else {
+            result = _.merge(result, {
+              name: {
+                supported: version ? semver.satisfies(version, constraint) : true
+              }
+            });
+          }
         }, {}),
-        supported: version ? semver.satisfies(version, method.version) : true
+        supported: version ? semver.satisfies(version, method.version) : true,
+        category: method.category,
+        version: method.version,
       };
     }, {});
 
@@ -132,7 +151,7 @@ class Client {
     });
     this.request.getAsync = promisify(this.request.get);
     this.request.postAsync = promisify(this.request.post);
-    this.requester = new Requester({ methods: this.methods, version });
+    this.requester = new Requester({ methods: this.methods, version: this.version });
     this.parser = new Parser({ headers: this.headers });
   }
 
@@ -274,5 +293,4 @@ export default Client;
  * Export Client class (CJS) for compatibility with require('bitcoin-core').
  */
 
-// @ts-expect-error ts-migrate(2580) FIXME: Cannot find name 'module'. Do you need to install ... Remove this comment to see the full error message
 module.exports = Client;

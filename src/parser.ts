@@ -3,7 +3,6 @@
  * Module dependencies.
  */
 
-// @ts-expect-error ts-migrate(7016) FIXME: Could not find a declaration file for module 'json... Remove this comment to see the full error message
 import JSONBigInt from 'json-bigint';
 import RpcError from './errors/rpc-error';
 import _ from 'lodash';
@@ -93,7 +92,6 @@ export default class Parser {
     // When requesting a binary response, the body will be returned as a Buffer representation of
     // this error string.
     if (response.headers['content-type'] !== 'application/json' && response.statusCode !== 200) {
-      // @ts-expect-error ts-migrate(2580) FIXME: Cannot find name 'Buffer'. Do you need to install ... Remove this comment to see the full error message
       if (response.body instanceof Buffer) {
         response.body = response.body.toString('utf-8');
       }
