@@ -1,23 +1,35 @@
-
 /**
  * Module dependencies.
  */
 
-import { assign, defaults, get, has, isArray, isEmpty, isPlainObject, isString, map, mapKeys } from 'lodash';
-import methods from '../methods';
+import {
+  assign,
+  defaults,
+  get,
+  has,
+  isArray,
+  isEmpty,
+  isPlainObject,
+  isString,
+  map,
+  mapKeys,
+} from "lodash";
+import methods from "../methods";
 
 /**
  * Map all methods to lowercase.
  */
 
-const lowercaseMethods = mapKeys(methods, (value: any, key: any) => key.toLowerCase());
+const lowercaseMethods = mapKeys(methods, (value: any, key: any) =>
+  key.toLowerCase()
+);
 
 /**
  * Obfuscate the response body.
  */
 
 function obfuscateResponseBody(body: any, method: any) {
-  const fn = get(lowercaseMethods[method], 'obfuscate.response');
+  const fn = get(lowercaseMethods[method], "obfuscate.response");
 
   if (!fn || isEmpty(body.result)) {
     return body;
@@ -31,7 +43,7 @@ function obfuscateResponseBody(body: any, method: any) {
  */
 
 function obfuscateResponse(request: any, instance: any) {
-  if (request.type !== 'response') {
+  if (request.type !== "response") {
     return;
   }
 
@@ -39,8 +51,8 @@ function obfuscateResponse(request: any, instance: any) {
     return;
   }
 
-  if (get(request, `headers['content-type']`) === 'application/octet-stream') {
-    request.body = '******';
+  if (get(request, `headers['content-type']`) === "application/octet-stream") {
+    request.body = "******";
 
     return;
   }
@@ -56,7 +68,9 @@ function obfuscateResponse(request: any, instance: any) {
   if (isArray(request.body)) {
     const methodsById = mapKeys(requestBody, (method: any) => method.id);
 
-    request.body = map(request.body, (request: any) => obfuscateResponseBody(request, methodsById[request.id].method));
+    request.body = map(request.body, (request: any) =>
+      obfuscateResponseBody(request, methodsById[request.id].method)
+    );
   } else {
     request.body = obfuscateResponseBody(request.body, requestBody.method);
   }
@@ -69,7 +83,7 @@ function obfuscateResponse(request: any, instance: any) {
  */
 
 function obfuscateRequestBody(body: any) {
-  const method = get(lowercaseMethods[body.method], 'obfuscate.request');
+  const method = get(lowercaseMethods[body.method], "obfuscate.request");
 
   if (!method) {
     return body;
@@ -87,7 +101,7 @@ function obfuscateRequestBody(body: any) {
  */
 
 function obfuscateRequest(request: any) {
-  if (request.type !== 'request') {
+  if (request.type !== "request") {
     return;
   }
 
@@ -111,15 +125,18 @@ function obfuscateRequest(request: any) {
  */
 
 function obfuscateHeaders(request: any) {
-  if (request.type !== 'request') {
+  if (request.type !== "request") {
     return;
   }
 
-  if (!has(request, 'headers.authorization')) {
+  if (!has(request, "headers.authorization")) {
     return;
   }
 
-  request.headers.authorization = request.headers.authorization.replace(/(Basic )(.*)/, `$1******`);
+  request.headers.authorization = request.headers.authorization.replace(
+    /(Basic )(.*)/,
+    `$1******`
+  );
 }
 
 /**

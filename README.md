@@ -1,7 +1,9 @@
 # bitcoin-core
+
 A modern Bitcoin Core REST and RPC client to execute administrative tasks, [multiwallet](https://bitcoincore.org/en/2017/09/01/release-0.15.0/#multiwallet) operations and queries about network and the blockchain.
 
 ## Status
+
 [![npm version][npm-image]][npm-url] [![build status][travis-image]][travis-url]
 
 ## Installation
@@ -21,8 +23,11 @@ npm install bitcoin-core --save
 ```
 
 ## Usage
+
 ### Client(...args)
+
 #### Arguments
+
 1. `[agentOptions]` _(Object)_: Optional `agent` [options](https://github.com/request/request#using-optionsagentoptions) to configure SSL/TLS.
 2. `[headers=false]` _(boolean)_: Whether to return the response headers.
 3. `[host=localhost]` _(string)_: The host to connect to.
@@ -39,12 +44,14 @@ npm install bitcoin-core --save
 14. `[wallet]` _(string)_: Which wallet to manage ([read more](#multiwallet)).
 
 ### Examples
+
 #### Using network mode
+
 The `network` will automatically determine the port to connect to, just like the `bitcoind` and `bitcoin-cli` commands.
 
 ```js
-const Client = require('bitcoin-core');
-const client = new Client({ network: 'regtest' });
+const Client = require("bitcoin-core");
+const client = new Client({ network: "regtest" });
 ```
 
 ##### Setting a custom port
@@ -54,15 +61,16 @@ const client = new Client({ port: 28332 });
 ```
 
 #### Connecting to an SSL/TLS server with strict checking enabled
+
 By default, when `ssl` is enabled, strict checking is implicitly enabled.
 
 ```js
-const fs = require('fs');
+const fs = require("fs");
 const client = new Client({
   agentOptions: {
-    ca: fs.readFileSync('/etc/ssl/bitcoind/cert.pem')
+    ca: fs.readFileSync("/etc/ssl/bitcoind/cert.pem"),
   },
-  ssl: true
+  ssl: true,
 });
 ```
 
@@ -72,8 +80,8 @@ const client = new Client({
 const client = new Client({
   ssl: {
     enabled: true,
-    strict: false
-  }
+    strict: false,
+  },
 });
 ```
 
@@ -92,6 +100,7 @@ util.callbackify(() => client.getInfo())((error, help) => console.log(help));
 ```
 
 #### Returning headers in the response
+
 For compatibility with other Bitcoin Core clients.
 
 ```js
@@ -111,19 +120,21 @@ Since version v0.14.0, it is possible to send commands via the JSON-RPC interfac
 You **must** provide a version in the client arguments to enable named parameters.
 
 ```js
-const client = new Client({ version: '0.15.1' });
+const client = new Client({ version: "0.15.1" });
 ```
+
 For instance, take the `getBalance()` call written using positional arguments:
+
 ```js
-const balance = await new Client().getBalance('*', 0);
+const balance = await new Client().getBalance("*", 0);
 ```
 
 It is functionally equivalent to using the named arguments `account` and `minconf`, leaving out `include_watchonly` (defaults to `false`):
 
 ```js
-const balance = await new Client({ version: '0.15.1' }).getBalance({
-  account: '*',
-  minconf: 0
+const balance = await new Client({ version: "0.15.1" }).getBalance({
+  account: "*",
+  minconf: 0,
 });
 ```
 
@@ -157,47 +168,47 @@ Notice the `rpcauth` hash which has been previously generated for the password `
 Instantiate a client for each wallet and execute commands targeted at each wallet:
 
 ```js
-const Client = require('bitcoin-core');
+const Client = require("bitcoin-core");
 
 const wallet1 = new Client({
-  network: 'regtest',
-  wallet: 'wallet1.dat',
-  username: 'foo',
-  password: 'j1DuzF7QRUp-iSXjgewO9T_WT1Qgrtz_XWOHCMn_O-Y='
+  network: "regtest",
+  wallet: "wallet1.dat",
+  username: "foo",
+  password: "j1DuzF7QRUp-iSXjgewO9T_WT1Qgrtz_XWOHCMn_O-Y=",
 });
 
 const wallet2 = new Client({
-  network: 'regtest',
-  wallet: 'wallet2.dat',
-  username: 'foo',
-  password: 'j1DuzF7QRUp-iSXjgewO9T_WT1Qgrtz_XWOHCMn_O-Y='
+  network: "regtest",
+  wallet: "wallet2.dat",
+  username: "foo",
+  password: "j1DuzF7QRUp-iSXjgewO9T_WT1Qgrtz_XWOHCMn_O-Y=",
 });
 
-(async function() {
+(async function () {
   await wallet2.generate(100);
 
   console.log(await wallet1.getBalance());
   // => 0
   console.log(await wallet2.getBalance());
   // => 50
-}());
+})();
 ```
 
-
 ### Version Checking
+
 By default, all methods are exposed on the client independently of the version it is connecting to. This is the most flexible option as defining methods for unavailable RPC calls does not cause any harm and the library is capable of handling a `Method not found` response error correctly.
 
 ```js
 const client = new Client();
 
-client.command('foobar');
+client.command("foobar");
 // => RpcError: -32601 Method not found
 ```
 
 However, if you prefer to be on the safe side, you can enable strict version checking. This will validate all method calls before executing the actual RPC request:
 
 ```js
-const client = new Client({ version: '0.12.0' });
+const client = new Client({ version: "0.12.0" });
 
 client.getHashesPerSec();
 // => Method "gethashespersec" is not supported by version "0.12.0"
@@ -215,6 +226,7 @@ client.getWork();
 To avoid potential issues with prototype references, all methods are still enumerable on the library client prototype.
 
 ### RPC
+
 Start the `bitcoind` with the RPC server enabled and optionally configure a username and password:
 
 ```sh
@@ -228,6 +240,7 @@ By default, port `8332` is used to listen for requests in `mainnet` mode, or `18
 The RPC services binds to the localhost loopback network interface, so use `rpcbind` to change where to bind to and `rpcallowip` to whitelist source IP access.
 
 #### Methods
+
 All RPC [methods](src/methods.js) are exposed on the client interface as a camelcase'd version of those available on `bitcoind` (see examples below).
 
 For a more complete reference about which methods are available, check the [RPC documentation](https://bitcoin.org/en/developer-reference#remote-procedure-calls-rpcs) on the [Bitcoin Core Developer Reference website](https://bitcoin.org/en/developer-reference).
@@ -235,12 +248,34 @@ For a more complete reference about which methods are available, check the [RPC 
 ##### Examples
 
 ```js
-client.createRawTransaction([{ txid: '1eb590cd06127f78bf38ab4140c4cdce56ad9eb8886999eb898ddf4d3b28a91d', vout: 0 }], { 'mgnucj8nYqdrPFh2JfZSB1NmUThUGnmsqe': 0.13 });
-client.sendMany('test1', { mjSk1Ny9spzU2fouzYgLqGUD8U41iR35QN: 0.1, mgnucj8nYqdrPFh2JfZSB1NmUThUGnmsqe: 0.2 }, 6, 'Example Transaction');
-client.sendToAddress('mmXgiR6KAhZCyQ8ndr2BCfEq1wNG2UnyG6', 0.1,  'sendtoaddress example', 'Nemo From Example.com');
+client.createRawTransaction(
+  [
+    {
+      txid: "1eb590cd06127f78bf38ab4140c4cdce56ad9eb8886999eb898ddf4d3b28a91d",
+      vout: 0,
+    },
+  ],
+  { mgnucj8nYqdrPFh2JfZSB1NmUThUGnmsqe: 0.13 }
+);
+client.sendMany(
+  "test1",
+  {
+    mjSk1Ny9spzU2fouzYgLqGUD8U41iR35QN: 0.1,
+    mgnucj8nYqdrPFh2JfZSB1NmUThUGnmsqe: 0.2,
+  },
+  6,
+  "Example Transaction"
+);
+client.sendToAddress(
+  "mmXgiR6KAhZCyQ8ndr2BCfEq1wNG2UnyG6",
+  0.1,
+  "sendtoaddress example",
+  "Nemo From Example.com"
+);
 ```
 
 #### Batch requests
+
 Batch requests are support by passing an array to the `command` method with a `method` and optionally, `parameters`. The return value will be an array with all the responses.
 
 ```js
@@ -268,6 +303,7 @@ new Client().command(batch).then(([address, error]) => console.log(address, erro
 ```
 
 ### REST
+
 Support for the REST interface is still **experimental** and the API is still subject to change. These endpoints are also **unauthenticated** so [there are certain risks which you should be aware](https://github.com/bitcoin/bitcoin/blob/master/doc/REST-interface.md#risks), specifically of leaking sensitive data of the node if not correctly protected.
 
 Error handling is still fragile so avoid passing user input.
@@ -293,9 +329,11 @@ Unlike RPC methods which are automatically exposed on the client, REST ones are 
 - [getUnspentTransactionOutputs](#getunspenttransactionoutputsoutpoints-options)
 
 #### getBlockByHash(hash, [options])
+
 Given a block hash, returns a block, in binary, hex-encoded binary or JSON formats.
 
 ##### Arguments
+
 1. `hash` _(string)_: The block hash.
 2. `[options]` _(Object)_: The options object.
 3. `[options.extension=json]` _(string)_: Return in binary (`bin`), hex-encoded binary (`hex`) or JSON (`json`) format.
@@ -303,13 +341,18 @@ Given a block hash, returns a block, in binary, hex-encoded binary or JSON forma
 ##### Example
 
 ```js
-client.getBlockByHash('0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206', { extension: 'json' });
+client.getBlockByHash(
+  "0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206",
+  { extension: "json" }
+);
 ```
 
 #### getBlockHeadersByHash(hash, count, [options])
+
 Given a block hash, returns amount of block headers in upward direction.
 
 ##### Arguments
+
 1. `hash` _(string)_: The block hash.
 2. `count` _(number)_: The number of blocks to count in upward direction.
 3. `[options]` _(Object)_: The options object.
@@ -318,10 +361,15 @@ Given a block hash, returns amount of block headers in upward direction.
 ##### Example
 
 ```js
-client.getBlockHeadersByHash('0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206', 1, { extension: 'json' });
+client.getBlockHeadersByHash(
+  "0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206",
+  1,
+  { extension: "json" }
+);
 ```
 
 #### getBlockchainInformation()
+
 Returns various state info regarding block chain processing.
 
 ##### Example
@@ -331,6 +379,7 @@ client.getBlockchainInformation();
 ```
 
 #### getMemoryPoolContent()
+
 Returns transactions in the transaction memory pool.
 
 ##### Example
@@ -340,7 +389,9 @@ client.getMemoryPoolContent();
 ```
 
 #### getMemoryPoolInformation()
+
 Returns various information about the transaction memory pool. Only supports JSON as output format.
+
 - size: the number of transactions in the transaction memory pool.
 - bytes: size of the transaction memory pool in bytes.
 - usage: total transaction memory pool memory usage.
@@ -352,9 +403,11 @@ client.getMemoryPoolInformation();
 ```
 
 #### getTransactionByHash(hash, [options])
+
 Given a transaction hash, returns a transaction in binary, hex-encoded binary, or JSON formats.
 
 #### Arguments
+
 1. `hash` _(string)_: The transaction hash.
 2. `[options]` _(Object)_: The options object.
 3. `[options.summary=false]` _(boolean)_: Whether to return just the transaction hash, thus saving memory.
@@ -363,13 +416,18 @@ Given a transaction hash, returns a transaction in binary, hex-encoded binary, o
 ##### Example
 
 ```js
-client.getTransactionByHash('b4dd08f32be15d96b7166fd77afd18aece7480f72af6c9c7f9c5cbeb01e686fe', { extension: 'json', summary: false });
+client.getTransactionByHash(
+  "b4dd08f32be15d96b7166fd77afd18aece7480f72af6c9c7f9c5cbeb01e686fe",
+  { extension: "json", summary: false }
+);
 ```
 
 #### getUnspentTransactionOutputs(outpoints, [options])
+
 Query unspent transaction outputs (UTXO) for a given set of outpoints. See [BIP64](https://github.com/bitcoin/bips/blob/master/bip-0064.mediawiki) for input and output serialisation.
 
 #### Arguments
+
 1. `outpoints` _(array\<Object\>|Object)_: The outpoint to query in the format `{ id: '<txid>', index: '<index>' }`.
 2. `[options]` _(Object)_: The options object.
 3. `[options.extension=json]` _(string)_: Return in binary (`bin`), hex-encoded binary (`hex`) or JSON (`json`) format.
@@ -377,19 +435,27 @@ Query unspent transaction outputs (UTXO) for a given set of outpoints. See [BIP6
 ##### Example
 
 ```js
-client.getUnspentTransactionOutputs([{
-  id: '0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206',
-  index: 0
-}, {
-  id: '0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206',
-  index: 1
-}], { extension: 'json' })
+client.getUnspentTransactionOutputs(
+  [
+    {
+      id: "0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206",
+      index: 0,
+    },
+    {
+      id: "0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206",
+      index: 1,
+    },
+  ],
+  { extension: "json" }
+);
 ```
 
 ### SSL
+
 This client supports SSL out of the box. Simply pass the SSL public certificate to the client and optionally disable strict SSL checking which will bypass SSL validation (the connection is still encrypted but the server it is connecting to may not be trusted). This is, of course, discouraged unless for testing purposes when using something like self-signed certificates.
 
 #### Generating a self-signed certificates for testing purposes
+
 Please note that the following procedure should only be used for testing purposes.
 
 Generate an self-signed certificate together with an unprotected private key:
@@ -399,6 +465,7 @@ openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 3650 -nod
 ```
 
 #### Connecting via SSL
+
 On Bitcoin Core <0.12, you can start the `bitcoind` RPC server directly with SSL:
 
 ```sh
@@ -428,14 +495,14 @@ stunnel -d 28332 -r 127.0.0.1:18332 -p stunnel.pem -P ''
 Then pass the public certificate to the client:
 
 ```js
-const Client = require('bitcoin-core');
-const fs = require('fs');
+const Client = require("bitcoin-core");
+const fs = require("fs");
 const client = new Client({
   agentOptions: {
-    ca: fs.readFileSync('/etc/ssl/bitcoind/cert.pem')
+    ca: fs.readFileSync("/etc/ssl/bitcoind/cert.pem"),
   },
   port: 28332,
-  ssl: true
+  ssl: true,
 });
 ```
 
@@ -452,7 +519,9 @@ Example output defining the environment variable `DEBUG=bitcoin-core`:
 ```javascript
 const client = new Client();
 
-client.getTransactionByHash('b4dd08f32be15d96b7166fd77afd18aece7480f72af6c9c7f9c5cbeb01e686fe');
+client.getTransactionByHash(
+  "b4dd08f32be15d96b7166fd77afd18aece7480f72af6c9c7f9c5cbeb01e686fe"
+);
 
 // {
 //   "name": "bitcoin-core",
@@ -480,6 +549,7 @@ client.getTransactionByHash('b4dd08f32be15d96b7166fd77afd18aece7480f72af6c9c7f9c
 A custom logger can be passed via the `logger` option and it should implement [bunyan's log levels](https://github.com/trentm/node-bunyan#levels).
 
 ## Tests
+
 Currently the test suite is tailored for Docker (including `docker-compose`) due to the multitude of different `bitcoind` configurations that are required in order to get the test suite passing.
 
 To test using a local installation of `node.js` but with dependencies (e.g. `bitcoind`) running inside Docker:
@@ -502,6 +572,7 @@ npm version [<newversion> | major | minor | patch] -m "Release %s"
 ```
 
 ## License
+
 MIT
 
 [npm-image]: https://img.shields.io/npm/v/bitcoin-core.svg?style=flat-square
