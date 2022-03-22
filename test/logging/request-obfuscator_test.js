@@ -288,7 +288,7 @@ describe("RequestObfuscator", () => {
 
     it("should obfuscate the `body` when `headers.content-type` is `application/octet-stream`", () => {
       const request = {
-        body: new Buffer("foobar"),
+        body: Buffer.from("foobar"),
         headers: { "content-type": "application/octet-stream" },
         type: "response",
       };
