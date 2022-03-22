@@ -2,7 +2,7 @@
  * Module dependencies.
  */
 
-import { obfuscate } from "../../src/logging/request-obfuscator";
+import { obfuscate } from "../../dist/src/logging/request-obfuscator";
 
 /**
  * Test `RequestObfuscator`.

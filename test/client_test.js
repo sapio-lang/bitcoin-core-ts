@@ -2,12 +2,12 @@
  * Module dependencies.
  */
 
-import Client from "../src/index";
-import RpcError from "../src/errors/rpc-error";
+import Client from "../dist/src/index";
+import RpcError from "../dist/src/errors/rpc-error";
 import _ from "lodash";
 import config from "./config";
 import fs from "fs";
-import methods from "../src/methods";
+import methods from "../dist/src/methods";
 import parse from "./utils/help-parser-util";
 import path from "path";
 import should from "should";
