@@ -685,7 +685,7 @@ export const methods: Methods = {
   },
   scantxoutset: {
     category: "blockchain",
-    version: new Range("=>0.17.0"),
+    version: new Range(">=0.17.0"),
   },
   sendFrom: {
     category: "wallet",
