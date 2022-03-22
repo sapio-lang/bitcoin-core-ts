@@ -13,7 +13,7 @@ sut:
   working_dir: /app
 
 bitcoin-core:
-  image: ruimarinho/bitcoin-core:0.17-alpine
+  image: ruimarinho/bitcoin-core:22.0-alpine
   command: -printtoconsole
     -regtest=1
     -rest
@@ -28,7 +28,7 @@ bitcoin-core:
     - 18443:18443
 
 bitcoin-core-multi-wallet:
-  image: ruimarinho/bitcoin-core:0.17-alpine
+  image: ruimarinho/bitcoin-core:22.0-alpine
   command: -printtoconsole
     -regtest=1
     -rest
