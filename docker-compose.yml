@@ -1,79 +1,78 @@
-sut:
-  image: node:16
-  command: sh -c 'npm install && npm test'
-  volumes:
-    - .:/app
-  environment:
-    - CI=true
-  links:
-    - bitcoin-core
-    - bitcoin-core-multi-wallet
-    - bitcoin-core-ssl
-    - bitcoin-core-username-only
-  working_dir: /app
+version: "3"
 
-bitcoin-core:
-  image: ruimarinho/bitcoin-core:22.0-alpine
-  command: -printtoconsole
-    -regtest=1
-    -rest
-    -rpcallowip=10.211.0.0/16
-    -rpcallowip=172.17.0.0/16
-    -rpcallowip=192.168.0.0/16
-    -rpcpassword=bar
-    -rpcport=18443
-    -rpcuser=foo
-    -server
-  ports:
-    - 18443:18443
+services:
+  sut:
+    image: node:16
+    command: sh -c 'npm install && npm run transpile && npm test'
+    volumes:
+      - .:/app
+    environment:
+      - CI=true
+    depends_on:
+      - bitcoin-core
+      - bitcoin-core-multi-wallet
+      - bitcoin-core-ssl
+      - bitcoin-core-username-only
+    working_dir: /app
 
-bitcoin-core-multi-wallet:
-  image: ruimarinho/bitcoin-core:22.0-alpine
-  command: -printtoconsole
-    -regtest=1
-    -rest
-    -rpcallowip=10.211.0.0/16
-    -rpcallowip=172.17.0.0/16
-    -rpcallowip=192.168.0.0/16
-    -rpcpassword=bar
-    -wallet=wallet1
-    -wallet=wallet2
-    -rpcport=18453
-    -rpcuser=foo
-    -server
-  ports:
-    - 18453:18453
+  bitcoin-core:
+    image: ruimarinho/bitcoin-core:0.17-alpine
+    command: -printtoconsole
+      -regtest=1
+      -rest
+      -rpcallowip=0.0.0.0/0
+      -rpcbind=0.0.0.0
+      -rpcpassword=bar
+      -rpcport=18443
+      -rpcuser=foo
+      -server
+    expose:
+      - 18443
 
-bitcoin-core-ssl:
-  image: ruimarinho/bitcoin-core:0.11-alpine
-  command: -printtoconsole
-    -regtest=1
-    -rest
-    -rpcallowip=10.211.0.0/16
-    -rpcallowip=172.17.0.0/16
-    -rpcallowip=192.168.0.0/16
-    -rpcpassword=bar
-    -rpcport=18463
-    -rpcssl
-    -rpcsslcertificatechainfile=/etc/ssl/bitcoind/cert.pem
-    -rpcsslprivatekeyfile=/etc/ssl/bitcoind/key.pem
-    -rpcuser=foo
-    -server
-  volumes:
-    - ./test/config/ssl:/etc/ssl/bitcoind
-  ports:
-    - 18463:18463
+  bitcoin-core-multi-wallet:
+    image: ruimarinho/bitcoin-core:0.17-alpine
+    command: -printtoconsole
+      -regtest=1
+      -rest
+      -rpcallowip=0.0.0.0/0
+      -rpcbind=0.0.0.0
+      -rpcpassword=bar
+      -wallet=wallet1
+      -wallet=wallet2
+      -rpcport=18453
+      -rpcuser=foo
+      -server
+    expose:
+      - 18453
 
-bitcoin-core-username-only:
-  image: ruimarinho/bitcoin-core:0.11-alpine
-  command: -printtoconsole
-    -regtest=1
-    -rest
-    -rpcallowip=10.211.0.0/16
-    -rpcallowip=172.17.0.0/16
-    -rpcallowip=192.168.0.0/16
-    -rpcport=18473
-    -rpcuser=foo
-    -server
-  ports:
-    - 18473:18473
+  bitcoin-core-ssl:
+    image: ruimarinho/bitcoin-core:0.11-alpine
+    command: -printtoconsole
+      -regtest=1
+      -rest
+      -rpcallowip=0.0.0.0/0
+      -rpcbind=0.0.0.0
+      -rpcpassword=bar
+      -rpcport=18463
+      -rpcssl
+      -rpcsslcertificatechainfile=/etc/ssl/bitcoind/cert.pem
+      -rpcsslprivatekeyfile=/etc/ssl/bitcoind/key.pem
+      -rpcuser=foo
+      -server
+    volumes:
+      - ./test/config/ssl:/etc/ssl/bitcoind
+    expose:
+      - 18463
+
+  bitcoin-core-username-only:
+    image: ruimarinho/bitcoin-core:0.11-alpine
+    command: -printtoconsole
+      -regtest=1
+      -rest
+      -rpcallowip=0.0.0.0/0
+      -rpcbind=0.0.0.0
+      -rpcport=18473
+      -rpcuser=foo
+      -server
+    expose:
+      - 18473
