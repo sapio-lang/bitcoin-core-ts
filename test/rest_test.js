@@ -2,8 +2,8 @@
  * Module dependencies.
  */
 
-import Client from "../src/index";
-import RpcError from "../src/errors/rpc-error";
+import Client from "../dist/src/index";
+import RpcError from "../dist/src/errors/rpc-error";
 import config from "./config";
 import should from "should";
 

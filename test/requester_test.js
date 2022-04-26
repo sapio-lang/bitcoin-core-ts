@@ -3,7 +3,7 @@
  */
 
 import { defaults } from "lodash";
-import Client from "../src/index";
+import Client from "../dist/src/index";
 import config from "./config";
 import should from "should";
 

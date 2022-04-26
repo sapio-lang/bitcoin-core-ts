@@ -28,7 +28,7 @@
     "dependencies": "docker-compose up -d bitcoind bitcoind-ssl bitcoind-username-only",
     "lint": "eslint \"**/*.{ts,tsx}\"",
     "prepublish": "npm run transpile",
-    "test": "NODE_ENV=test mocha $npm_package_options_mocha",
+    "test": "NODE_ENV=test mocha --require @babel/register --require @babel/polyfill --timeout 20000 --recursive --require should",
     "testdocker": "docker-compose run --rm sut",
     "transpile": "rm -rf dist/* && tsc --project ./ && babel build --out-dir dist/src --copy-files",
     "version": "npm run changelog --future-release=$npm_package_version && npm run transpile && git add -A CHANGELOG.md dist"
@@ -83,9 +83,6 @@
     "instrument": false,
     "report-dir": "./coverage",
     "sourceMap": false
-  },
-  "options": {
-    "mocha": "--require @babel/register --require @babel/polyfill --timeout 20000 --recursive --require should"
   },
   "pre-commit": [
     "lint"
