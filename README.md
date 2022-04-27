@@ -1,17 +1,19 @@
-# bitcoin-core
+# bitcoin-core-ts
 
 A modern Bitcoin Core REST and RPC client to execute administrative tasks, [multiwallet](https://bitcoincore.org/en/2017/09/01/release-0.15.0/#multiwallet) operations and queries about network and the blockchain.
 
 ## Status
 
-[![npm version][npm-image]][npm-url] [![build status][travis-image]][travis-url]
+[![npm version][npm-image]][npm-url]
+[![test-action-image]][test-action-url]
+[![package-action-image]][package-action-url]
 
 ## Installation
 
 Install the package via `yarn`:
 
 ```sh
-yarn add bitcoin-core
+yarn add bitcoin-core-ts
 ```
 
 or via `npm`:
@@ -19,7 +21,7 @@ or via `npm`:
 Install the package via `npm`:
 
 ```sh
-npm install bitcoin-core --save
+npm install bitcoin-core-ts --save
 ```
 
 ## Usage
@@ -49,14 +51,15 @@ npm install bitcoin-core --save
 
 The `network` will automatically determine the port to connect to, just like the `bitcoind` and `bitcoin-cli` commands.
 
-```js
-const Client = require("bitcoin-core");
+```ts
+import Client from "bitcoin-core-ts";
+
 const client = new Client({ network: "regtest" });
 ```
 
 ##### Setting a custom port
 
-```js
+```ts
 const client = new Client({ port: 28332 });
 ```
 
@@ -64,8 +67,9 @@ const client = new Client({ port: 28332 });
 
 By default, when `ssl` is enabled, strict checking is implicitly enabled.
 
-```js
-const fs = require("fs");
+```ts
+import fs from "fs";
+
 const client = new Client({
   agentOptions: {
     ca: fs.readFileSync("/etc/ssl/bitcoind/cert.pem"),
@@ -76,7 +80,7 @@ const client = new Client({
 
 #### Connecting to an SSL/TLS server without strict checking enabled
 
-```js
+```ts
 const client = new Client({
   ssl: {
     enabled: true,
@@ -87,7 +91,7 @@ const client = new Client({
 
 #### Using promises to process the response
 
-```js
+```ts
 client.getInfo().then((help) => console.log(help));
 ```
 
@@ -95,7 +99,7 @@ client.getInfo().then((help) => console.log(help));
 
 Callback support was removed. Since every method returns a `Promise`, [callbackify()](https://nodejs.org/api/util.html#util_util_callbackify_original) (`>node@v8.2.0`) can be used, or for older `node` versions you can use the npm package [callbackify](https://www.npmjs.com/package/callbackify).
 
-```js
+```ts
 util.callbackify(() => client.getInfo())((error, help) => console.log(help));
 ```
 
@@ -103,7 +107,7 @@ util.callbackify(() => client.getInfo())((error, help) => console.log(help));
 
 For compatibility with other Bitcoin Core clients.
 
-```js
+```ts
 const client = new Client({ headers: true });
 
 // Promise style with headers enabled:
@@ -119,19 +123,19 @@ Since version v0.14.0, it is possible to send commands via the JSON-RPC interfac
 
 You **must** provide a version in the client arguments to enable named parameters.
 
-```js
+```ts
 const client = new Client({ version: "0.15.1" });
 ```
 
 For instance, take the `getBalance()` call written using positional arguments:
 
-```js
+```ts
 const balance = await new Client().getBalance("*", 0);
 ```
 
 It is functionally equivalent to using the named arguments `account` and `minconf`, leaving out `include_watchonly` (defaults to `false`):
 
-```js
+```ts
 const balance = await new Client({ version: "0.15.1" }).getBalance({
   account: "*",
   minconf: 0,
@@ -167,8 +171,8 @@ Notice the `rpcauth` hash which has been previously generated for the password `
 
 Instantiate a client for each wallet and execute commands targeted at each wallet:
 
-```js
-const Client = require("bitcoin-core");
+```ts
+import Client from "bitcoin-core-ts";
 
 const wallet1 = new Client({
   network: "regtest",
@@ -198,7 +202,7 @@ const wallet2 = new Client({
 
 By default, all methods are exposed on the client independently of the version it is connecting to. This is the most flexible option as defining methods for unavailable RPC calls does not cause any harm and the library is capable of handling a `Method not found` response error correctly.
 
-```js
+```ts
 const client = new Client();
 
 client.command("foobar");
@@ -207,7 +211,7 @@ client.command("foobar");
 
 However, if you prefer to be on the safe side, you can enable strict version checking. This will validate all method calls before executing the actual RPC request:
 
-```js
+```ts
 const client = new Client({ version: "0.12.0" });
 
 client.getHashesPerSec();
@@ -216,7 +220,7 @@ client.getHashesPerSec();
 
 If you want to enable strict version checking for the bleeding edge version, you may set a very high version number to exclude recently deprecated calls:
 
-```js
+```ts
 const client = new Client({ version: `${Number.MAX_SAFE_INTEGER}.0.0` });
 
 client.getWork();
@@ -247,7 +251,7 @@ For a more complete reference about which methods are available, check the [RPC 
 
 ##### Examples
 
-```js
+```ts
 client.createRawTransaction(
   [
     {
@@ -278,7 +282,7 @@ client.sendToAddress(
 
 Batch requests are support by passing an array to the `command` method with a `method` and optionally, `parameters`. The return value will be an array with all the responses.
 
-```js
+```ts
 const batch = [
   { method: 'getnewaddress', parameters: [] },
   { method: 'getnewaddress', parameters: [] }
@@ -292,7 +296,7 @@ new Client().command(batch).then(([firstAddress, secondAddress]) => console.log(
 
 Note that batched requests will only throw an error if the batch request itself cannot be processed. However, each individual response may contain an error akin to an individual request.
 
-```js
+```ts
 const batch = [
   { method: 'foobar', parameters: [] },
   { method: 'getnewaddress', parameters: [] }
@@ -340,7 +344,7 @@ Given a block hash, returns a block, in binary, hex-encoded binary or JSON forma
 
 ##### Example
 
-```js
+```ts
 client.getBlockByHash(
   "0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206",
   { extension: "json" }
@@ -360,7 +364,7 @@ Given a block hash, returns amount of block headers in upward direction.
 
 ##### Example
 
-```js
+```ts
 client.getBlockHeadersByHash(
   "0f9188f13cb7b2c71f2a335e3a4fc328bf5beb436012afca590b1a11466e2206",
   1,
@@ -374,7 +378,7 @@ Returns various state info regarding block chain processing.
 
 ##### Example
 
-```js
+```ts
 client.getBlockchainInformation();
 ```
 
@@ -384,7 +388,7 @@ Returns transactions in the transaction memory pool.
 
 ##### Example
 
-```js
+```ts
 client.getMemoryPoolContent();
 ```
 
@@ -398,7 +402,7 @@ Returns various information about the transaction memory pool. Only supports JSO
 
 ##### Example
 
-```js
+```ts
 client.getMemoryPoolInformation();
 ```
 
@@ -415,7 +419,7 @@ Given a transaction hash, returns a transaction in binary, hex-encoded binary, o
 
 ##### Example
 
-```js
+```ts
 client.getTransactionByHash(
   "b4dd08f32be15d96b7166fd77afd18aece7480f72af6c9c7f9c5cbeb01e686fe",
   { extension: "json", summary: false }
@@ -434,7 +438,7 @@ Query unspent transaction outputs (UTXO) for a given set of outpoints. See [BIP6
 
 ##### Example
 
-```js
+```ts
 client.getUnspentTransactionOutputs(
   [
     {
@@ -494,9 +498,10 @@ stunnel -d 28332 -r 127.0.0.1:18332 -p stunnel.pem -P ''
 
 Then pass the public certificate to the client:
 
-```js
-const Client = require("bitcoin-core");
-const fs = require("fs");
+```ts
+import Client from "bitcoin-core-ts";
+import fs from "fs";
+
 const client = new Client({
   agentOptions: {
     ca: fs.readFileSync("/etc/ssl/bitcoind/cert.pem"),
@@ -575,7 +580,9 @@ npm version [<newversion> | major | minor | patch] -m "Release %s"
 
 MIT
 
-[npm-image]: https://img.shields.io/npm/v/bitcoin-core.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/bitcoin-core
-[travis-image]: https://img.shields.io/travis/ruimarinho/bitcoin-core.svg?style=flat-square
-[travis-url]: https://travis-ci.org/ruimarinho/bitcoin-core
+[npm-image]: https://img.shields.io/npm/v/bitcoin-core-ts.svg?style=appveyor
+[npm-url]: https://npmjs.org/package/bitcoin-core-ts
+[test-action-image]: https://github.com/sapio-lang/bitcoin-core-ts/actions/workflows/test.yml/badge.svg
+[test-action-url]: https://github.com/sapio-lang/bitcoin-core-ts/actions/workflows/test.yml
+[package-action-image]: https://github.com/sapio-lang/bitcoin-core-ts/actions/workflows/package.yml/badge.svg
+[package-action-url]: https://github.com/sapio-lang/bitcoin-core-ts/actions/workflows/package.yml
